@@ -1,6 +1,6 @@
 {
   "name": "smartera-agentkit",
-  "version": "0.1.0-dev.1",
+  "version": "0.1.0-dev.2",
   "private": true,
   "description": "Local npx launcher for the Smartera AgentKit Python CLI",
   "license": "MIT",
@@ -13,9 +13,9 @@
   "scripts": {
     "prepack": "uv build --wheel"
   },
-  "agentkitWheel": "dist/smartera_agentkit-0.1.0.dev1-py3-none-any.whl",
+  "agentkitWheel": "dist/smartera_agentkit-0.1.0.dev2-py3-none-any.whl",
   "files": [
     "bin/",
-    "dist/smartera_agentkit-0.1.0.dev1-py3-none-any.whl"
+    "dist/smartera_agentkit-0.1.0.dev2-py3-none-any.whl"
   ]
 }

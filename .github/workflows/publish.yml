@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       acknowledge_prototype:
-        description: 'Publish 0.1.0.dev1 with the prototype limitations in README'
+        description: 'Publish 0.1.0.dev2 with the prototype limitations in README'
         required: true
         type: boolean
         default: false
@@ -68,11 +68,11 @@ jobs:
           PYTHONPATH: src
         run: python -m pytest -q -rs tests
       - name: Smoke-test the release wheel outside checkout
-        run: python scripts/smoke_launchers.py --wheel-only --wheel release-dist/smartera_agentkit-0.1.0.dev1-py3-none-any.whl --python ${{ matrix.python }}
+        run: python scripts/smoke_launchers.py --wheel-only --wheel release-dist/smartera_agentkit-0.1.0.dev2-py3-none-any.whl --python ${{ matrix.python }}
       - name: Rebuild wheel from source distribution
-        run: uv build --no-sources --wheel release-dist/smartera_agentkit-0.1.0.dev1.tar.gz --out-dir rebuilt-dist
+        run: uv build --no-sources --wheel release-dist/smartera_agentkit-0.1.0.dev2.tar.gz --out-dir rebuilt-dist
       - name: Smoke-test rebuilt source distribution outside checkout
-        run: python scripts/smoke_launchers.py --wheel-only --wheel rebuilt-dist/smartera_agentkit-0.1.0.dev1-py3-none-any.whl --python ${{ matrix.python }}
+        run: python scripts/smoke_launchers.py --wheel-only --wheel rebuilt-dist/smartera_agentkit-0.1.0.dev2-py3-none-any.whl --python ${{ matrix.python }}
 
   publish:
     needs: verify
@@ -100,4 +100,4 @@ jobs:
             uv publish --trusted-publishing always release-dist/*
           fi
       - name: Verify the published package from PyPI
-        run: uvx --no-cache --index-url https://pypi.org/simple --from 'smartera-agentkit==0.1.0.dev1' smartera-agentkit --version
+        run: uvx --no-cache --index-url https://pypi.org/simple --from 'smartera-agentkit==0.1.0.dev2' smartera-agentkit --version

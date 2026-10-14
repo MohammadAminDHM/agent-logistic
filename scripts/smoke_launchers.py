@@ -31,8 +31,8 @@ def main():
     parser.add_argument('--python', help='Python version for uvx (for CI matrix)')
     args = parser.parse_args()
     repo = Path(__file__).resolve().parents[1]
-    wheel = (args.wheel or repo / "dist/smartera_agentkit-0.1.0.dev1-py3-none-any.whl").resolve()
-    archive = repo / "dist/smartera-agentkit-0.1.0-dev.1.tgz"
+    wheel = (args.wheel or repo / "dist/smartera_agentkit-0.1.0.dev2-py3-none-any.whl").resolve()
+    archive = repo / "dist/smartera-agentkit-0.1.0-dev.2.tgz"
     assert wheel.is_file(), "Build wheel first"
     uvx = shutil.which("uvx")
     npx = shutil.which("npx.cmd" if os.name == "nt" else "npx")
@@ -52,19 +52,24 @@ def main():
         for name, command in launchers.items():
             assert "init" in run([*command, "--help"], cwd)
             assert "local-ai" in run([*command, "list"], cwd)
+            assert "saas" in run([*command, "list"], cwd)
             target = cwd / f"{name} project \u03a9"
-            run([*command, "init", str(target), "--dry-run"], cwd)
+            run([*command, "init", str(target), "--profile", "saas", "--dry-run"], cwd)
             assert not target.exists(), "Dry-run created its target"
             target.mkdir()
             original = b"# User instructions\r\nPreserve these bytes.\r\n"
             (target / "AGENTS.md").write_bytes(original)
             (target / "package.json").write_text('{"private":true}\n')
-            run([*command, "init", "--profile", "local-ai"], target)
+            run([*command, "init", "--profile", "local-ai", "--profile", "saas"], target)
             assert (target / "AGENTS.md").read_bytes().startswith(original)
             assert (target / ".agent/context/LOCAL_AI.md").is_file()
             assert (target / ".agent/.gitignore").is_file()
+            assert (target / ".agent/workflows/TOOLS.md").is_file()
+            assert (target / ".agent/context/SAAS.md").is_file()
+            for skill in ('token-budget-workflow', 'codebase-graph-navigation', 'saas-feature-delivery'):
+                assert (target / f'.agents/skills/{skill}/SKILL.md').is_file()
             before = snapshot(target)
-            run([*command, "init", "--profile", "local-ai"], target)
+            run([*command, "init", "--profile", "saas", "--profile", "local-ai"], target)
             assert snapshot(target) == before, "Repeated init changed bytes or mtimes"
             run([*command, "doctor"], target)
             assert snapshot(target) == before, "Doctor wrote target files"

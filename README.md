@@ -13,6 +13,22 @@ the target project or downloading uv automatically.
 Release setup and measured publication results are in
 [docs/PUBLISHING.md](docs/PUBLISHING.md).
 
+## SaaS workflow in the development checkout
+
+The unpublished **0.1.0.dev2** checkout adds an optional `saas` profile informed
+by RTK, Graphify and GitHub Spec Kit:
+
+```bash
+uvx --from . smartera-agentkit init /path/to/project --profile saas --dry-run
+uvx --from . smartera-agentkit init /path/to/project --profile saas
+```
+
+It adds selective-context skills, a small feature-delivery workflow, optional
+tool procedures and SaaS acceptance templates. It preserves existing specs and
+does not install or execute external tools. Use it with `--profile local-ai` when
+both apply. See [workflow integrations and checks](docs/WORKFLOW_INTEGRATIONS.md).
+The public `0.1.0.dev1` release does not include this profile.
+
 ## Run from PyPI
 
 With uv installed, run from the project you want to scaffold:

@@ -4,6 +4,11 @@ The published version is [**0.1.0.dev1**](https://pypi.org/project/smartera-agen
 limitations listed in README. Publication does not complete T01–T08 or establish
 production safety. Do not promote it to a stable version without those gates.
 
+The local checkout is now **0.1.0.dev2**, with the SaaS workflow profile described
+in `WORKFLOW_INTEGRATIONS.md`. It has not been published. The workflow and local
+artifact paths target dev2 for the next explicitly authorized publication;
+historical dev1 release evidence below remains unchanged.
+
 ## Account setup
 
 The repository remote is `MohammadAminDHM/agent-logistic`, default branch `main`.
@@ -50,10 +55,11 @@ project-scoped token after the project exists.
    That job uploads the tested artifacts using the configured Actions secret
    or GitHub OIDC and verifies the exact published version through uvx with a
    fresh cache.
-5. After successful publication, verify the public journey:
+5. After the next dev2 publication, verify the public journey (dev2 is not yet
+   available at the time of this local change):
 
    ```bash
-   uvx --from 'smartera-agentkit==0.1.0.dev1' smartera-agentkit --help
+   uvx --from 'smartera-agentkit==0.1.0.dev2' smartera-agentkit --help
    uvx smartera-agentkit --help
    ```
 
