@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smartera-agentkit"
+version = "0.1.0.dev1"
+description = "Conservative repository scaffolding for coding agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+smartera-agentkit = "smartera_agentkit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+smartera_agentkit = ["templates/**/*", "templates/**/.*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
