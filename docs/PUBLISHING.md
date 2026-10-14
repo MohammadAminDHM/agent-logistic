@@ -23,7 +23,18 @@ availability of the name; only a successful upload establishes ownership.
 
 The GitHub `pypi` environment requires review by `MohammadAminDHM` and permits
 deployments from `main`. Self-review is permitted so the owner can approve a
-manually started release. No PyPI token is stored in the repository.
+manually started release. No PyPI token is stored in source files.
+
+If Trusted Publishing cannot be matched, a replacement PyPI API token may be
+saved as the repository Actions secret `PYPI_API_TOKEN` at
+<https://github.com/MohammadAminDHM/agent-logistic/settings/secrets/actions>.
+The publish step uses this secret when present, otherwise it uses GitHub OIDC.
+The secret is passed only through `UV_PUBLISH_TOKEN` in that upload step; it is
+not exposed to build or verification jobs or put on the command line.
+Never paste tokens into chat or commit them. Revoke any token shared in chat
+before configuring a replacement. For the first upload of a new project, the
+token needs permission to create a project; it can be replaced with a
+project-scoped token after the project exists.
 
 ## Release steps
 
@@ -36,8 +47,9 @@ manually started release. No PyPI token is stored in the repository.
    It stops on any failure. Windows accounts without symlink privileges skip
    that specific test with an explicit reason; other failures are not skipped.
 4. Review the matrix results and approve the waiting `pypi` environment job.
-   That job uploads the tested artifacts using GitHub OIDC and verifies the
-   exact published version through uvx with a fresh cache.
+   That job uploads the tested artifacts using the configured Actions secret
+   or GitHub OIDC and verifies the exact published version through uvx with a
+   fresh cache.
 5. After successful publication, verify the public journey:
 
    ```bash
@@ -68,7 +80,8 @@ also update artifact paths in the npm launcher, smoke script and workflow.
 - Two approved upload attempts failed during OIDC token exchange with PyPI
   `invalid-publisher` (no publisher matching the presented claims). Neither
   attempt uploaded a distribution. The saved PyPI publisher configuration
-  must be reconciled with the workflow identity before retrying publication.
+  must be reconciled with the workflow identity, or a replacement token saved
+  in the Actions secret, before retrying publication.
 
 Official references: [PyPI pending publishers](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/),
 [GitHub publisher fields and environments](https://docs.pypi.org/trusted-publishers/adding-a-publisher/),

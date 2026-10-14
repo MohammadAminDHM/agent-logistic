@@ -90,7 +90,14 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           version: '0.11.21'
-      - name: Publish the verified distributions using GitHub OIDC
-        run: uv publish --trusted-publishing always release-dist/*
+      - name: Publish the verified distributions
+        env:
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          if [ -n "$UV_PUBLISH_TOKEN" ]; then
+            uv publish --trusted-publishing never release-dist/*
+          else
+            uv publish --trusted-publishing always release-dist/*
+          fi
       - name: Verify the published package from PyPI
         run: uvx --no-cache --index-url https://pypi.org/simple --from 'smartera-agentkit==0.1.0.dev1' smartera-agentkit --version
