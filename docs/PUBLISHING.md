@@ -62,8 +62,13 @@ also update artifact paths in the npm launcher, smoke script and workflow.
 - Release wheel and wheel rebuilt from the sdist passed
   `python scripts/smoke_launchers.py --wheel-only --python 3.12`, with the
   rebuilt artifact supplied through `--wheel` for the second invocation.
-- The GitHub matrix, OIDC exchange and public upload remain pending until the
-  workflow is pushed, dispatched, and approved. Local results are not CI passes.
+- [Release run 38549929006](https://github.com/MohammadAminDHM/agent-logistic/actions/runs/38549929006)
+  built and checked both distributions and passed all nine OS/Python matrix
+  jobs after commit `0901874` was pushed to `main`.
+- Two approved upload attempts failed during OIDC token exchange with PyPI
+  `invalid-publisher` (no publisher matching the presented claims). Neither
+  attempt uploaded a distribution. The saved PyPI publisher configuration
+  must be reconciled with the workflow identity before retrying publication.
 
 Official references: [PyPI pending publishers](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/),
 [GitHub publisher fields and environments](https://docs.pypi.org/trusted-publishers/adding-a-publisher/),
