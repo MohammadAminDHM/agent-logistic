@@ -1,6 +1,6 @@
 # Smartera AgentKit — CLI starter / MVP prototype
 
-A **new starter implementation**, reconstructed from `PROJECT_BRIEF_ORIGINAL.md` (the original Oct 7 brief). The original deliverable was a **spec**, not working source. This starter is not a released PyPI package and does **not** claim to finish all 12 Codex tasks.
+A **new starter implementation**, reconstructed from `PROJECT_BRIEF_ORIGINAL.md` (the original Oct 7 brief). The original deliverable was a **spec**, not working source. Development preview **0.1.0.dev1** is [published on PyPI](https://pypi.org/project/smartera-agentkit/0.1.0.dev1/). It does **not** claim to finish all 12 Codex tasks or provide production-grade transactions.
 
 ## Requirements
 
@@ -10,8 +10,30 @@ The optional `npx` launcher also requires Node.js 18+ with npm, and `uvx` on
 `PATH`. It delegates to the same Python CLI without installing dependencies in
 the target project or downloading uv automatically.
 
-PyPI release setup and the pending development-preview publishing steps are in
-[docs/PUBLISHING.md](docs/PUBLISHING.md). Public installation remains pending.
+Release setup and measured publication results are in
+[docs/PUBLISHING.md](docs/PUBLISHING.md).
+
+## Run from PyPI
+
+With uv installed, run from the project you want to scaffold:
+
+```bash
+uvx smartera-agentkit --help
+uvx smartera-agentkit init . --dry-run
+uvx smartera-agentkit init .
+uvx smartera-agentkit doctor .
+```
+
+To pin the published development preview explicitly:
+
+```bash
+uvx --from 'smartera-agentkit==0.1.0.dev1' smartera-agentkit --help
+```
+
+Public installation and scaffold preservation were verified outside the source
+checkout. Artifact checks passed on Windows, Linux and macOS with Python
+3.10–3.12. First use needs the package and a compatible Python runtime available
+through network access or local caches. This remains an experimental preview.
 
 ## Local install / build
 
@@ -39,9 +61,9 @@ Run these from this checkout. From another directory, replace `.` after
 targets still resolve against the directory you run the command from. On
 Windows PowerShell, use `npx.cmd` if execution policy blocks `npx.ps1`.
 
-The npm package is private to prevent accidental publication. Neither the bare
-`npx smartera-agentkit` nor the bare `uvx smartera-agentkit` is a verified public
-installation path. First execution may need network access for build tooling;
+The npm package is private to prevent accidental publication; bare
+`npx smartera-agentkit` is not a supported public installation path.
+Local source execution may need network access for build tooling;
 offline execution requires a populated cache. The npm launcher follows
 [npm exec's local package support](https://docs.npmjs.com/cli/v11/commands/npm-exec/)
 and delegates isolation to [uvx](https://docs.astral.sh/uv/guides/tools/).
@@ -83,6 +105,7 @@ python -m pytest -q
 
 ## Known gaps / roadmap
 
-**Not production hardened.** The initial implementation is a starting point for Codex tasks T01–T08. It lacks a durable crash-recovery journal, OS-specific junction checks on Windows, durable lock across concurrent processes, full malicious-path testing, multi-platform CI, and verified `uvx` wheel smoke tests across platforms. It intentionally refuses unsupported `update` (T09, v0.2). Do not treat its preservation behavior as fully transactional in cases of power loss, concurrent processes, or abrupt termination. The master specification and acceptance criteria remain in `PROJECT_BRIEF_ORIGINAL.md`.
+**Not production hardened.** The initial implementation is a starting point for Codex tasks T01–T08. It lacks a durable crash-recovery journal, OS-specific junction checks on Windows, durable lock across concurrent processes, and full malicious-path testing. The release workflow now verifies the wheel and a rebuilt source distribution on three operating systems with Python 3.10–3.12; this does not complete the remaining safety gates. It intentionally refuses unsupported `update` (T09, v0.2). Do not treat its preservation behavior as fully transactional in cases of power loss, concurrent processes, or abrupt termination. The master specification and acceptance criteria remain in `PROJECT_BRIEF_ORIGINAL.md`.
 
-`uvx smartera-agentkit ...` by itself will work only after **an authorized real package release to PyPI**. Use `uvx --from . smartera-agentkit ...` until then. The target project does not need any AgentKit dependencies installed.
+The target project does not need any AgentKit dependencies installed; uvx runs
+the CLI in its isolated tool environment.

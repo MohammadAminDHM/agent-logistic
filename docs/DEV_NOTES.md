@@ -1,8 +1,8 @@
 # Implementation status
 
-This directory was newly reconstructed from the original project brief, not recovered from an old ZIP or git repository. Start from tasks T01–T08 in `PROJECT_BRIEF_ORIGINAL.md`; test every acceptance item. The 0.1.0.dev1 starter deliberately does not implement production-grade journal/locking semantics. Neither PyPI publication nor CI results are claimed. `uvx --from .` installs a local package and must be run from this directory.
+This directory was newly reconstructed from the original project brief, not recovered from an old ZIP or git repository. Start from tasks T01–T08 in `PROJECT_BRIEF_ORIGINAL.md`; test every acceptance item. The 0.1.0.dev1 starter deliberately does not implement production-grade journal/locking semantics. Development preview publication and CI results are recorded below and in `PUBLISHING.md`. `uvx --from .` installs a local package and must be run from this directory.
 
-## Local uvx and npx launchers (2026-10-14)
+## Initial local uvx and npx checks (2026-10-14, before publication)
 
 - Added a private npm package with a `smartera-agentkit` executable. It passes
   arguments to `uvx --from <bundled-wheel> smartera-agentkit` without a shell,
@@ -29,3 +29,15 @@ This directory was newly reconstructed from the original project brief, not reco
   Linux/macOS and minimum Node/Python versions were not tested. No public npm
   or PyPI availability, complete T01–T08 acceptance, or production release is
   claimed. The original brief remains unchanged.
+
+## Published development preview (2026-10-14)
+
+Version `0.1.0.dev1` was published to PyPI through
+[run 38557202164](https://github.com/MohammadAminDHM/agent-logistic/actions/runs/38557202164).
+All nine release verification jobs (Windows/Linux/macOS, Python 3.10–3.12)
+passed before upload. Both the release wheel and a wheel rebuilt from the sdist
+were exercised. A separate fresh-cache Windows check verified pinned and bare
+uvx installation from public PyPI, plus preservation/repeatability checks outside
+the checkout. The initial unprivileged local Windows symlink result above
+remains a limitation of that local run; the published preview still lacks the
+documented hardening. npm remains local-only. See `PUBLISHING.md` for details.

@@ -1,6 +1,6 @@
 # Publishing the development preview
 
-The prepared version is **0.1.0.dev1**, a pre-alpha prototype with the safety
+The published version is [**0.1.0.dev1**](https://pypi.org/project/smartera-agentkit/0.1.0.dev1/), a pre-alpha prototype with the safety
 limitations listed in README. Publication does not complete T01–T08 or establish
 production safety. Do not promote it to a stable version without those gates.
 
@@ -79,9 +79,20 @@ also update artifact paths in the npm launcher, smoke script and workflow.
   jobs after commit `0901874` was pushed to `main`.
 - Two approved upload attempts failed during OIDC token exchange with PyPI
   `invalid-publisher` (no publisher matching the presented claims). Neither
-  attempt uploaded a distribution. The saved PyPI publisher configuration
-  must be reconciled with the workflow identity, or a replacement token saved
-  in the Actions secret, before retrying publication.
+  attempt uploaded a distribution.
+- [Release run 38557202164](https://github.com/MohammadAminDHM/agent-logistic/actions/runs/38557202164)
+  succeeded after commit `bcb20e7`, using the replacement Actions secret.
+  Build, all nine matrix jobs, protected upload and the workflow's fresh-cache
+  public installation check passed. Both the wheel and sdist are on PyPI.
+- A separate Windows check queried public PyPI metadata and installed the pinned
+  version and bare `uvx smartera-agentkit --help` with fresh caches, outside the
+  checkout with `PYTHONPATH` removed. Public list, dry-run, initialization with
+  spaces/Unicode, existing instruction preservation, repeat-run bytes/mtimes,
+  read-only doctor and invalid-profile exit code also passed. UTF-8 was enabled
+  for redirected output. No complete T01–T08 or production-safety claim is made.
+
+PyPI distributions are immutable. Future changes require a new version and
+updated artifact paths; do not rebuild different files under `0.1.0.dev1`.
 
 Official references: [PyPI pending publishers](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/),
 [GitHub publisher fields and environments](https://docs.pypi.org/trusted-publishers/adding-a-publisher/),
