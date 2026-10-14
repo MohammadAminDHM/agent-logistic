@@ -1,0 +1,70 @@
+# Publishing the development preview
+
+The prepared version is **0.1.0.dev1**, a pre-alpha prototype with the safety
+limitations listed in README. Publication does not complete T01–T08 or establish
+production safety. Do not promote it to a stable version without those gates.
+
+## Account setup
+
+The repository remote is `MohammadAminDHM/agent-logistic`, default branch `main`.
+Register a pending publisher at <https://pypi.org/manage/account/publishing/>:
+
+| Field | Value |
+| --- | --- |
+| PyPI project name | `smartera-agentkit` |
+| GitHub owner | `MohammadAminDHM` |
+| Repository | `agent-logistic` |
+| Workflow filename | `publish.yml` |
+| Environment | `pypi` |
+
+The owner reported completing this setup on 2026-10-14. A direct PyPI JSON
+lookup returned HTTP 404 on that date. This does not reserve or guarantee
+availability of the name; only a successful upload establishes ownership.
+
+The GitHub `pypi` environment requires review by `MohammadAminDHM` and permits
+deployments from `main`. Self-review is permitted so the owner can approve a
+manually started release. No PyPI token is stored in the repository.
+
+## Release steps
+
+1. Review and explicitly authorize committing/pushing the project and publishing
+   workflow to `main`. Local AGENTS.md prohibits automatic commits and pushes.
+2. Open the repository's **Actions → Publish development package to PyPI**.
+   Choose **Run workflow** on `main` and acknowledge the prototype limitations.
+3. The workflow builds a wheel and sdist once, checks metadata, and tests the
+   wheel and a rebuilt sdist on Windows, Linux and macOS with Python 3.10–3.12.
+   It stops on any failure. Windows accounts without symlink privileges skip
+   that specific test with an explicit reason; other failures are not skipped.
+4. Review the matrix results and approve the waiting `pypi` environment job.
+   That job uploads the tested artifacts using GitHub OIDC and verifies the
+   exact published version through uvx with a fresh cache.
+5. After successful publication, verify the public journey:
+
+   ```bash
+   uvx --from 'smartera-agentkit==0.1.0.dev1' smartera-agentkit --help
+   uvx smartera-agentkit --help
+   ```
+
+   The pinned command is the explicit development-preview installation. Verify
+   unpinned resolution before advertising it. Update README's availability
+   statements only after the upload and public installation have succeeded.
+
+The workflow only runs manually, never on ordinary pushes or pull requests.
+It grants OIDC upload permissions only to the publish job. The npm package
+remains private and is not published by this workflow. Version updates must
+also update artifact paths in the npm launcher, smoke script and workflow.
+
+## Local evidence on 2026-10-14
+
+- Source tests: 6 passed, 1 skipped (Windows symlink privilege 1314).
+- Wheel and sdist built with `uv build --no-sources --out-dir dist`.
+- Both distributions passed `twine check --strict`.
+- Release wheel and wheel rebuilt from the sdist passed
+  `python scripts/smoke_launchers.py --wheel-only --python 3.12`, with the
+  rebuilt artifact supplied through `--wheel` for the second invocation.
+- The GitHub matrix, OIDC exchange and public upload remain pending until the
+  workflow is pushed, dispatched, and approved. Local results are not CI passes.
+
+Official references: [PyPI pending publishers](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/),
+[GitHub publisher fields and environments](https://docs.pypi.org/trusted-publishers/adding-a-publisher/),
+[uv package publication](https://docs.astral.sh/uv/guides/package/).

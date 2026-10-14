@@ -1,0 +1,96 @@
+name: Publish development package to PyPI
+
+on:
+  workflow_dispatch:
+    inputs:
+      acknowledge_prototype:
+        description: 'Publish 0.1.0.dev1 with the prototype limitations in README'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pypi-publish
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: inputs.acknowledge_prototype && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.21'
+      - name: Build wheel and source distribution
+        run: uv build --no-sources --out-dir release-dist
+      - name: Validate PyPI metadata
+        run: uvx --from twine twine check --strict release-dist/*
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-release
+          path: release-dist/*
+          if-no-files-found: error
+
+  verify:
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.10', '3.11', '3.12']
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONUTF8: '1'
+      UV_PYTHON_DOWNLOADS: never
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.21'
+      - uses: actions/download-artifact@v4
+        with:
+          name: python-release
+          path: release-dist
+      - name: Install test dependencies
+        run: python -m pip install pytest
+      - name: Filesystem tests
+        env:
+          PYTHONPATH: src
+        run: python -m pytest -q -rs tests
+      - name: Smoke-test the release wheel outside checkout
+        run: python scripts/smoke_launchers.py --wheel-only --wheel release-dist/smartera_agentkit-0.1.0.dev1-py3-none-any.whl --python ${{ matrix.python }}
+      - name: Rebuild wheel from source distribution
+        run: uv build --no-sources --wheel release-dist/smartera_agentkit-0.1.0.dev1.tar.gz --out-dir rebuilt-dist
+      - name: Smoke-test rebuilt source distribution outside checkout
+        run: python scripts/smoke_launchers.py --wheel-only --wheel rebuilt-dist/smartera_agentkit-0.1.0.dev1-py3-none-any.whl --python ${{ matrix.python }}
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/smartera-agentkit/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: python-release
+          path: release-dist
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.11.21'
+      - name: Publish the verified distributions using GitHub OIDC
+        run: uv publish --trusted-publishing always release-dist/*
+      - name: Verify the published package from PyPI
+        run: uvx --no-cache --index-url https://pypi.org/simple --from 'smartera-agentkit==0.1.0.dev1' smartera-agentkit --version

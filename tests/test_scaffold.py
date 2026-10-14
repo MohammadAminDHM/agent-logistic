@@ -1,4 +1,5 @@
 import json
+import pytest
 from smartera_agentkit.cli import main
 
 
@@ -60,6 +61,11 @@ def test_symlink_refusal(tmp_path):
     outside.mkdir()
     target=tmp_path/'target'
     target.mkdir()
-    (target/'.agent').symlink_to(outside,target_is_directory=True)
+    try:
+        (target/'.agent').symlink_to(outside,target_is_directory=True)
+    except OSError as exc:
+        if getattr(exc, 'winerror', None) == 1314:
+            pytest.skip('Windows account lacks symlink creation privilege; refusal not verified')
+        raise
     assert main(['init',str(target)])==3
     assert not list(outside.iterdir())

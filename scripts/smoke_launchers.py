@@ -1,5 +1,6 @@
 """Smoke-test built uvx/npx artifacts from outside the source checkout."""
 from pathlib import Path
+import argparse
 import os
 import shutil
 import subprocess
@@ -24,18 +25,28 @@ def snapshot(root):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--wheel', type=Path, help='Wheel artifact to verify')
+    parser.add_argument('--wheel-only', action='store_true', help='Skip npm checks')
+    parser.add_argument('--python', help='Python version for uvx (for CI matrix)')
+    args = parser.parse_args()
     repo = Path(__file__).resolve().parents[1]
-    wheel = repo / "dist/smartera_agentkit-0.1.0.dev1-py3-none-any.whl"
+    wheel = (args.wheel or repo / "dist/smartera_agentkit-0.1.0.dev1-py3-none-any.whl").resolve()
     archive = repo / "dist/smartera-agentkit-0.1.0-dev.1.tgz"
-    assert wheel.is_file() and archive.is_file(), "Build wheel and npm archive first"
+    assert wheel.is_file(), "Build wheel first"
     uvx = shutil.which("uvx")
     npx = shutil.which("npx.cmd" if os.name == "nt" else "npx")
-    assert uvx and npx, "uvx and npx must be on PATH"
+    assert uvx, "uvx must be on PATH"
+    python_option = ['--python', args.python] if args.python else []
     launchers = {
-        "uvx-wheel": [uvx, "--from", str(wheel), "smartera-agentkit"],
-        "npx-archive": [npx, "--yes", "--package", str(archive), "smartera-agentkit"],
-        "npx-checkout": [npx, "--yes", "--package", str(repo), "smartera-agentkit"],
+        "uvx-wheel": [uvx, *python_option, "--from", str(wheel), "smartera-agentkit"],
     }
+    if not args.wheel_only:
+        assert npx and archive.is_file(), "Build npm archive and ensure npx is on PATH"
+        launchers.update({
+            "npx-archive": [npx, "--yes", "--package", str(archive), "smartera-agentkit"],
+            "npx-checkout": [npx, "--yes", "--package", str(repo), "smartera-agentkit"],
+        })
     with tempfile.TemporaryDirectory(prefix="agentkit-launchers-") as temp:
         cwd = Path(temp)
         for name, command in launchers.items():
@@ -60,6 +71,8 @@ def main():
             run([*command, "init", "--profile", "unknown"], target, expected=2)
             assert snapshot(target) == before, "Invalid invocation changed the target"
             print(f"PASS {name}: help, list, dry-run, caller cwd, Unicode/spaces, preservation, repeat, doctor, exit code")
+    if args.wheel_only:
+        return
     # Check the launcher's actionable missing-uvx diagnostic without a shell.
     env = os.environ.copy()
     env["PATH"] = ""

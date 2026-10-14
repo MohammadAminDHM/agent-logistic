@@ -10,6 +10,9 @@ The optional `npx` launcher also requires Node.js 18+ with npm, and `uvx` on
 `PATH`. It delegates to the same Python CLI without installing dependencies in
 the target project or downloading uv automatically.
 
+PyPI release setup and the pending development-preview publishing steps are in
+[docs/PUBLISHING.md](docs/PUBLISHING.md). Public installation remains pending.
+
 ## Local install / build
 
 ```bash
