@@ -1,6 +1,6 @@
 # Smartera AgentKit — CLI starter / MVP prototype
 
-A **new starter implementation**, reconstructed from `PROJECT_BRIEF_ORIGINAL.md` (the original Oct 7 brief). The original deliverable was a **spec**, not working source. Development preview **0.1.0.dev1** is [published on PyPI](https://pypi.org/project/smartera-agentkit/0.1.0.dev1/). It does **not** claim to finish all 12 Codex tasks or provide production-grade transactions.
+A **new starter implementation**, reconstructed from `PROJECT_BRIEF_ORIGINAL.md` (the original Oct 7 brief). The original deliverable was a **spec**, not working source. Development preview **0.1.0.dev2** is [published on PyPI](https://pypi.org/project/smartera-agentkit/0.1.0.dev2/). It does **not** claim to finish all 12 Codex tasks or provide production-grade transactions.
 
 ## Requirements
 
@@ -13,21 +13,22 @@ the target project or downloading uv automatically.
 Release setup and measured publication results are in
 [docs/PUBLISHING.md](docs/PUBLISHING.md).
 
-## SaaS workflow in the development checkout
+## SaaS workflow profile
 
-The unpublished **0.1.0.dev2** checkout adds an optional `saas` profile informed
+Published preview **0.1.0.dev2** adds an optional `saas` profile informed
 by RTK, Graphify and GitHub Spec Kit:
 
 ```bash
-uvx --from . smartera-agentkit init /path/to/project --profile saas --dry-run
-uvx --from . smartera-agentkit init /path/to/project --profile saas
+uvx --refresh smartera-agentkit init /path/to/project --profile saas --dry-run
+uvx smartera-agentkit init /path/to/project --profile saas
 ```
 
 It adds selective-context skills, a small feature-delivery workflow, optional
 tool procedures and SaaS acceptance templates. It preserves existing specs and
 does not install or execute external tools. Use it with `--profile local-ai` when
 both apply. See [workflow integrations and checks](docs/WORKFLOW_INTEGRATIONS.md).
-The public `0.1.0.dev1` release does not include this profile.
+The older `0.1.0.dev1` release does not include this profile. Use `--refresh` when
+upgrading from an earlier cached installation.
 
 ## Run from PyPI
 
@@ -43,7 +44,7 @@ uvx smartera-agentkit doctor .
 To pin the published development preview explicitly:
 
 ```bash
-uvx --from 'smartera-agentkit==0.1.0.dev1' smartera-agentkit --help
+uvx --from 'smartera-agentkit==0.1.0.dev2' smartera-agentkit --help
 ```
 
 Public installation and scaffold preservation were verified outside the source

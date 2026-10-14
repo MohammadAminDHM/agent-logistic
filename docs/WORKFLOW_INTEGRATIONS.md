@@ -1,6 +1,6 @@
 # SaaS delivery with bounded coding context
 
-The **unpublished 0.1.0.dev2 checkout** adds an opt-in `saas` profile. The public
+Published **0.1.0.dev2** adds an opt-in `saas` profile. The older
 `0.1.0.dev1` release does not contain this profile. This is a user-requested
 workflow/template addition within the existing scaffolding CLI; it does not
 complete the outstanding MVP preservation/recovery gates or implement a SaaS.
@@ -85,8 +85,19 @@ invocations, not terminal commands. Other versions/integrations can differ.
   files. This validates CLI setup, not actual host discovery or model behavior.
 - No measured reduction in total conversation tokens, invoice cost, rework or
   time to revenue is claimed. Use the generated measurement worksheet for
-  comparable workloads. This implementation was exercised locally on Windows;
-  the older release's CI results do not establish this revision's platform gates.
+  comparable workloads. The optional upstream tool trials were local Windows
+  checks. This revision's wheel and rebuilt sdist passed the release matrix on
+  Windows, Linux and macOS with Python 3.10–3.12 before publication.
+
+## Public release verification
+
+[Release run 38567069635](https://github.com/MohammadAminDHM/agent-logistic/actions/runs/38567069635)
+published dev2 after the build and all nine matrix jobs passed. An independent
+fresh-cache Windows check then installed dev2 from public PyPI, verified the
+pinned and bare uvx versions, and exercised the SaaS/local-ai profiles outside
+the checkout. Existing Spec Kit content and instruction bytes were preserved;
+dry-run, repeat bytes/mtimes, read-only doctor and error codes passed. Index
+metadata was explicitly refreshed; use `uvx --refresh` when upgrading.
 
 The integration fixtures, logs and downloaded test binary live under ignored
 `.artifacts/`. They are not runtime dependencies or package contents.

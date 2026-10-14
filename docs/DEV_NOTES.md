@@ -41,3 +41,15 @@ uvx installation from public PyPI, plus preservation/repeatability checks outsid
 the checkout. The initial unprivileged local Windows symlink result above
 remains a limitation of that local run; the published preview still lacks the
 documented hardening. npm remains local-only. See `PUBLISHING.md` for details.
+
+## SaaS workflow preview dev2 (2026-10-14)
+
+Commit `3f5cd33` added the optional SaaS profile, narrow RTK/Graphify/Spec Kit
+skills and preservation tests. Local tests reported 16 passed and 1 Windows
+symlink-privilege skip. Wheel, sdist and npm artifacts passed isolated smoke
+checks. [Release run 38567069635](https://github.com/MohammadAminDHM/agent-logistic/actions/runs/38567069635)
+then passed all nine OS/Python verification jobs and published `0.1.0.dev2`.
+Independent fresh-cache public uvx checks verified the SaaS profile and retained
+existing Spec Kit files. See `WORKFLOW_INTEGRATIONS.md` for tool-trial evidence,
+selective-context measurements and remaining limits; no overall token-saving or
+SaaS delivery-speed claim is made.

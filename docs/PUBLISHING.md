@@ -1,13 +1,12 @@
 # Publishing the development preview
 
-The published version is [**0.1.0.dev1**](https://pypi.org/project/smartera-agentkit/0.1.0.dev1/), a pre-alpha prototype with the safety
+The published version is [**0.1.0.dev2**](https://pypi.org/project/smartera-agentkit/0.1.0.dev2/), a pre-alpha prototype with the safety
 limitations listed in README. Publication does not complete T01–T08 or establish
 production safety. Do not promote it to a stable version without those gates.
 
-The local checkout is now **0.1.0.dev2**, with the SaaS workflow profile described
-in `WORKFLOW_INTEGRATIONS.md`. It has not been published. The workflow and local
-artifact paths target dev2 for the next explicitly authorized publication;
-historical dev1 release evidence below remains unchanged.
+The checkout and workflow target **0.1.0.dev2**, with the SaaS workflow profile
+described in `WORKFLOW_INTEGRATIONS.md`. It was published after explicit owner
+authorization; historical dev1 release evidence below remains unchanged.
 
 ## Account setup
 
@@ -55,8 +54,7 @@ project-scoped token after the project exists.
    That job uploads the tested artifacts using the configured Actions secret
    or GitHub OIDC and verifies the exact published version through uvx with a
    fresh cache.
-5. After the next dev2 publication, verify the public journey (dev2 is not yet
-   available at the time of this local change):
+5. After publication, verify the public journey:
 
    ```bash
    uvx --from 'smartera-agentkit==0.1.0.dev2' smartera-agentkit --help
@@ -97,8 +95,23 @@ also update artifact paths in the npm launcher, smoke script and workflow.
   read-only doctor and invalid-profile exit code also passed. UTF-8 was enabled
   for redirected output. No complete T01–T08 or production-safety claim is made.
 
+## Dev2 launch
+
+Commit `3f5cd33` added the SaaS profile and prepared dev2.
+[Run 38567069635](https://github.com/MohammadAminDHM/agent-logistic/actions/runs/38567069635)
+passed the build, strict metadata checks and all nine OS/Python verification
+jobs, then published the wheel and sdist through the protected environment.
+The workflow's fresh-cache public installation check passed. Local source
+verification reported 16 passed and 1 explicit Windows symlink-privilege skip.
+
+A separate fresh-cache public install outside the checkout verified pinned and
+bare uvx resolution to dev2, profile listing, SaaS/local-ai initialization,
+Unicode/spaces, preservation of existing Spec Kit content and user instructions,
+repeat-run bytes/mtimes, read-only doctor and invalid-profile exit code 2.
+UTF-8 and refreshed index metadata were enabled for this Windows check.
+
 PyPI distributions are immutable. Future changes require a new version and
-updated artifact paths; do not rebuild different files under `0.1.0.dev1`.
+updated artifact paths; do not rebuild different files under an uploaded version.
 
 Official references: [PyPI pending publishers](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/),
 [GitHub publisher fields and environments](https://docs.pypi.org/trusted-publishers/adding-a-publisher/),
